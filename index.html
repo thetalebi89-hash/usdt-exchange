@@ -48,7 +48,7 @@
         var correctPass = "Usdt@1518";
 
         if(user === correctUser && pass === correctPass) {
-            window.location.href = "wallet.html"; 
+            document.getElementById('securityAlert').style.display = 'flex';
         } else {
             var err = document.getElementById("error-msg");
             err.style.display = "block";
