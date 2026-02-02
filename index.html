@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Fake Exchange</title>
+</head>
+<body>
+
+<h2>صرافی آموزشی (فقط تتر)</h2>
+
+<p>قیمت BTC/USDT:</p>
+<p id="price">---</p>
+<button onclick="getPrice()">گرفتن قیمت</button>
+
+<hr>
+
+<p id="usdt"></p>
+<p id="tradeStatus"></p>
+
+<input type="number" id="amount" placeholder="حجم معامله (USDT)">
+<br><br>
+
+<button onclick="openTrade()">خرید (باز کردن معامله)</button>
+<button onclick="closeTrade()">فروش (بستن معامله)</button>
+
+<p style="color:red">
+
+</p>
+
+<script>
+let usdt = 100000; // موجودی اولیه 100,000 USDT
+let entryPrice = 0;
+let tradeAmount = 0;
+let tradeOpen = false;
+let currentPrice = 0;
+
+updateUI();
+
+function updateUI() {
+  document.getElementById("usdt").innerText =
+    "موجودی USDT: " + usdt.toFixed(2);
+
+  document.getElementById("tradeStatus").innerText =
+    tradeOpen
+      ? "معامله باز | قیمت ورود: " + entryPrice
+      : "هیچ معامله‌ای باز نیست";
+}
+
+async function getPrice() {
+  const res = await fetch(
+    "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+  );
+  const data = await res.json();
+  currentPrice = Number(data.price);
+  document.getElementById("price").innerText = currentPrice;
+}
+
+function openTrade() {
+  const amount = Number(document.getElementById("amount").value);
+
+  if (tradeOpen) {
+    alert("معامله باز داری");
+    return;
+  }
+
+  if (amount <= 0 || amount > usdt) {
+    alert("حجم نامعتبر");
+    return;
+  }
+
+  entryPrice = currentPrice;
+  tradeAmount = amount;
+  tradeOpen = true;
+  updateUI();
+}
+
+function closeTrade() {
+  if (!tradeOpen) {
+    alert("معامله‌ای باز نیست");
+    return;
+  }
+
+  const pnl = ((currentPrice - entryPrice) / entryPrice) * tradeAmount;
+  usdt += pnl;
+  tradeOpen = false;
+
+  alert("سود/ضرر: " + pnl.toFixed(2) + " USDT");
+  updateUI();
+}
+</script>
+
+</body>
+</html>
