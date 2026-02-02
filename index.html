@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<title>Demo Trading</title>
+<style>
+body{
+  margin:0;
+  font-family:tahoma;
+  background:#0b0e11;
+  color:#eaecef;
+}
+header{
+  background:#12161c;
+  padding:12px;
+  text-align:center;
+  font-size:18px;
+  border-bottom:1px solid #1e2329;
+}
+.container{
+  padding:15px;
+}
+.balance{
+  background:#12161c;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:15px;
+}
+.price-box{
+  background:#12161c;
+  padding:12px;
+  border-radius:6px;
+  margin-bottom:15px;
+  display:flex;
+  justify-content:space-between;
+}
+input{
+  width:100%;
+  padding:10px;
+  background:#0b0e11;
+  border:1px solid #2b3139;
+  color:white;
+  border-radius:4px;
+  margin-bottom:10px;
+}
+button{
+  width:48%;
+  padding:12px;
+  border:none;
+  border-radius:4px;
+  font-size:16px;
+  cursor:pointer;
+}
+.buy{background:#0ecb81;color:black;}
+.sell{background:#f6465d;color:black;}
+.row{
+  display:flex;
+  justify-content:space-between;
+}
+.note{
+  font-size:12px;
+  color:#888;
+  margin-top:10px;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+BTC / USDT (Demo)
+</header>
+
+<div class="container">
+
+<div class="balance" id="balance">
+موجودی: 100,000 USDT
+</div>
+
+<div class="price-box">
+<span>قیمت لحظه‌ای</span>
+<strong id="price">---</strong>
+</div>
+
+<input type="number" id="amount" placeholder="مقدار معامله (USDT)">
+
+<div class="row">
+<button class="buy" onclick="buy()">خرید</button>
+<button class="sell" onclick="sell()">فروش</button>
+</div>
+
+<div class="note">
+
+</div>
+
+</div>
+
+<script>
+let usdt = 100000;
+let entry = 0;
+let open = false;
+let priceNow = 0;
+
+async function loadPrice(){
+  const r = await fetch("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT");
+  const d = await r.json();
+  priceNow = Number(d.price);
+  document.getElementById("price").innerText = priceNow.toFixed(2);
+}
+loadPrice();
+setInterval(loadPrice,5000);
+
+function update(){
+  document.getElementById("balance").innerText =
+    "موجودی: " + usdt.toFixed(2) + " USDT";
+}
+
+function buy(){
+  const a = Number(document.getElementById("amount").value);
+  if(open){alert("معامله باز است");return;}
+  if(a<=0 || a>usdt){alert("مقدار نامعتبر");return;}
+  entry = priceNow;
+  open = true;
+  alert("خرید انجام شد (دمو)");
+}
+
+function sell(){
+  if(!open){alert("معامله‌ای باز نیست");return;}
+  const a = Number(document.getElementById("amount").value);
+  const pnl = ((priceNow-entry)/entry)*a;
+  usdt += pnl;
+  open = false;
+  alert("سود/ضرر: "+pnl.toFixed(2)+" USDT");
+  update();
+}
+</script>
+
+</body>
+</html>
